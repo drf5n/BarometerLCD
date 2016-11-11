@@ -2,6 +2,8 @@
 
 This sketch combines a BMP085 pressure sensor with a 16X2 based on HD44780 chip and a Teensy2.0
 
+![Sensor, LCD and Teensy on Breadboard](https://raw.githubusercontent.com/drf5n/BarometerLCD/master/Breadboard.png "Sensor, LCD and Teensy on Breadboard")
+
 The BMP085 sensor I used was on a 10DOF Geeetech IMU.
 
 The Teensy2.0 is from https://www.pjrc.com/store/teensy.html 
