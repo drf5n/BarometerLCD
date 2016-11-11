@@ -129,7 +129,7 @@
         lcd.setCursor(0,1);
         lcd.print(pressure/100.0,2);
         lcd.print(" ");
-        lcd.print(altitude,2);
+        lcd.print(altZ,2);
        
       Serial.println("End of loop");
       delay(1000);
