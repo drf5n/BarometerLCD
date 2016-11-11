@@ -14,6 +14,7 @@
    #define SENSE_VCC 4
    #define SENSE_GND 3
    #define SAVE_BUTTON 0
+   #define EWMA 0.1
    
      Encoder menu(7,8);
    
@@ -114,7 +115,7 @@
         }
         else
         {
-            altZ = 0.95*altZ + 0.05*altitude;
+            altZ = (1.0-EWMA)*altZ + EWMA*altitude;
         }
         //Display Altitude on console
         Serial.print(altZ);
