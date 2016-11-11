@@ -47,7 +47,7 @@
      // LCD15 LED+  +5   backlight
      // LCD16 LED-  220 ohm -> GND
                    
-   float altZ = -1.0;
+   float altZ = -9999.0;
    float pressure_save = 101325;
      
     void setup(void)
@@ -67,7 +67,7 @@
       /* Initialise the sensor */
       if(!bmp.begin()){
         while(1){
-          Serial.print("Ooops, no BMP085 detected ... Check your wiring or I2C ADDR!");
+          Serial.print("Ooops, no BMP085 detected ... Check wiring per https://github.com/drf5n/BarometerLCD");
           delay(1000);
         }
       }
@@ -86,50 +86,55 @@
         digitalWrite(SENSE_VCC,HIGH);
         bmp.getTemperature(&temperature);
         bmp.getPressure(&pressure);
-        if (digitalRead(SAVE_BUTTON)) 
+        if (!digitalRead(SAVE_BUTTON)) 
              pressure_save=pressure;
         digitalWrite(SENSE_VCC,LOW);
-        //Display temperature on console
+
+        /* Then convert the atmospheric pressure, SLP and temp to altitude */
+        float seaLevelPressure = SLP;
+        float altitude;
+        //altitude=bmp.readAltitude(seaLevelPressure);
+        altitude=bmp.pressureToAltitude(seaLevelPressure,pressure);
+        if (altZ < -999.0) { // Fast EWMA initialization
+           altZ = altitude;
+           pressure_save=pressure;
+        }
+        else
+        {
+            altZ = (1.0-EWMA)*altZ + EWMA*altitude;
+        }
+        
+        
+        //Display data on console
         Serial.print("Temp: ");
         Serial.print(temperature);
         Serial.println(" C");
         Serial.print("Pressure: ");
         Serial.print(pressure);
         Serial.println(" Pa");
-        //Display temperature on LCD
-        lcd.setCursor(0,0);
-        lcd.print("Temp:");
-        lcd.setCursor(9,0);
-        lcd.print("     C"); //We do it this way so that The "C" is always at the same place on the screen
-        lcd.setCursor(8,0);
-        lcd.print(temperature); //Some of the digits will overwrite the spaces left before "C"
-       
-        /* Then convert the atmospheric pressure, SLP and temp to altitude */
-        float seaLevelPressure = SLP;
-        Serial.print("Alt: ");
-        float altitude;
-        //altitude=bmp.readAltitude(seaLevelPressure);
-        altitude=bmp.pressureToAltitude(seaLevelPressure,pressure);
-        if (altZ == -1.0) {
-           altZ = altitude;
-        }
-        else
-        {
-            altZ = (1.0-EWMA)*altZ + EWMA*altitude;
-        }
         //Display Altitude on console
+        Serial.print("Alt: ");
         Serial.print(altZ);
         Serial.println(" m");
         Serial.println("");
+        
+        //Display temperature on LCD
+        lcd.setCursor(0,0);
+        lcd.print("     C         m"); //We do it this way so that The "C" is always at the same place on the screen
+        lcd.setCursor(0,0);
+        lcd.print(temperature,1); //Some of the digits will overwrite the spaces left before "C"
+        lcd.setCursor(7,0);
+        lcd.print(altZ,2); //Some of the digits will overwrite the spaces left before "C"
+       
         //Display Altitude on LCD
         lcd.setCursor(0,1);
-        lcd.print("P:    ");
-        lcd.setCursor(9,1);
-        lcd.print("     m");
+        lcd.print("    .   d");
         lcd.setCursor(0,1);
         lcd.print(pressure/100.0,2);
-        lcd.print(" ");
-        lcd.print(altZ,2);
+        lcd.setCursor(11,1);
+        lcd.print("  hPa");
+        lcd.setCursor(8,1);
+        lcd.print((pressure-pressure_save)/100.0,2);
        
       Serial.println("End of loop");
       delay(1000);
