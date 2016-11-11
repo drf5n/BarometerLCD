@@ -14,7 +14,7 @@
    #define SENSE_VCC 4
    #define SENSE_GND 3
    #define SAVE_BUTTON 0
-   #define EWMA 0.1
+   #define EWMA 0.2
    
      Encoder menu(7,8);
    
@@ -49,6 +49,7 @@
                    
    float altZ = -9999.0;
    float pressure_save = 101325;
+   float pressureZ = -9999.0;
      
     void setup(void)
     {
@@ -86,6 +87,12 @@
         digitalWrite(SENSE_VCC,HIGH);
         bmp.getTemperature(&temperature);
         bmp.getPressure(&pressure);
+        if (pressureZ == -9999.0) {  // Initialize EWMA quickly
+            pressureZ = pressure;  
+        } else {
+            pressureZ = (1.0-EWMA)*pressureZ + EWMA * pressure;
+        }
+        pressure=pressureZ; // Use smoothed pressure
         if (!digitalRead(SAVE_BUTTON)) 
              pressure_save=pressure;
         digitalWrite(SENSE_VCC,LOW);
