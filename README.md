@@ -11,4 +11,9 @@ I saw code like http://arduinolearning.com/code/bmp085-temperature-readings-lcd.
 I also added some conversions to meters above standard SLP, and a EWMA smoother to mitigate the noise.
 
 
+One thing I tried to do was choose the pins to minimize extra connections by aligning the LCD and the sensor with the sides of the chip.  I supply power to the devices directly with the pins of the Teensy development board and add just a couple wires on the breadboard to handle the extra signals.  The sensor is powered and grounded directly by pins adjacent to the SDA and SCL pins.
+
+I am starting to add some complexity to retain a historical pressure and possibly display other units, e.g. Pa, hPa,  mmHg, inH2O, meters, degC, degF, etc.  I think this could work easily with an encoder to scroll through the various options. 
+
+
 
