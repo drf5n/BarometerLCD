@@ -1,3 +1,5 @@
+#include <Encoder.h>
+
 // Connect a 10DOF http://www.geeetech.com/wiki/index.php/10DOF_ITG3200/ADXL345/HMC5883L/BMP085_sensor_breakout
 // with a BMP085 pressure sensor to a 
 // LCD screen to report pressure and temperature
@@ -11,8 +13,9 @@
    #include <LiquidCrystal.h>
    #define SENSE_VCC 4
    #define SENSE_GND 3
-   #define SAVE_BUTTON 1
- 
+   #define SAVE_BUTTON 0
+   
+     Encoder menu(7,8);
    
 //   #include <Adafruit_Sensor.h>
  //   #include <Adafruit_BMP085.h>
@@ -51,7 +54,7 @@
       /* put the LCD in write mode */
     //  pinMode(12,OUTPUT);  // LCD R/~W
     //  digitalWrite(12,LOW);
-      pinMode(SAVE_BUTTON,INPUT);
+      pinMode(SAVE_BUTTON,INPUT_PULLUP);
       pinMode(SENSE_VCC,OUTPUT); // Sensor
       pinMode(SENSE_GND,OUTPUT);
       pinMode(14,OUTPUT);
@@ -70,10 +73,12 @@
        
       lcd.begin(16,2); //Init for a 16x2 LCD
       lcd.clear(); //Just to be sure...
+      menu.write(0);
     }
      
     void loop(void)
     {
+        
         /* Display atmospheric pressure in hPa in console*/
         /* First we get the current temperature from the BMP085 */
         float temperature, pressure;
@@ -104,7 +109,7 @@
         float altitude;
         //altitude=bmp.readAltitude(seaLevelPressure);
         altitude=bmp.pressureToAltitude(seaLevelPressure,pressure);
-        if (altZ =-1.0) {
+        if (altZ == -1.0) {
            altZ = altitude;
         }
         else
