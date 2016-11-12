@@ -15,8 +15,10 @@
    #define SENSE_GND 3
    #define SAVE_BUTTON 0
    #define EWMA 0.2
+   #define CONTRAST_PWM 14  // Jumper to LCD3/VD
+   #define BACKLIGHT_PWM 15 // 220 ohm in series to LCD16/LED-
    
-     Encoder menu(7,8);
+   Encoder menu(7,8);
    
 //   #include <Adafruit_Sensor.h>
  //   #include <Adafruit_BMP085.h>
@@ -32,7 +34,7 @@
      //      LCD     Teensy2.0
      // LCD1 GND     
      // LCD2 VDD
-     // LCD3 VD          Contrast voltage (use 10K pot wiper or PWM on 14 or 15?)    
+     // LCD3 VD          Contrast voltage- Jumper to CONTRAST_PWM    
      // LCD4 RS     11
      // LCD5 R/~W   12   (hold low for write)
      // LCD6 EN     13
@@ -45,7 +47,7 @@
      // LCD13 D6    20
      // LCD14 D7    21
      // LCD15 LED+  +5   backlight
-     // LCD16 LED-  220 ohm -> GND
+     // LCD16 LED-  220 ohm -> BACKLIGHT_PWM
                    
    float altZ = -9999.0;
    float pressure_save = 101325;
@@ -59,8 +61,10 @@
       pinMode(SAVE_BUTTON,INPUT_PULLUP);
       pinMode(SENSE_VCC,OUTPUT); // Sensor
       pinMode(SENSE_GND,OUTPUT);
-      pinMode(14,OUTPUT);
-      analogWrite(14,80);
+      pinMode(CONTRAST_PWM,OUTPUT); // Contrast PWM
+      analogWrite(CONTRAST_PWM,80); 
+      pinMode(BACKLIGHT_PWM,OUTPUT); // Backlight PWM 
+      analogWrite(BACKLIGHT_PWM,160); 
       digitalWrite(SENSE_VCC,HIGH);
       digitalWrite(SENSE_GND,LOW);
       Serial.begin(9600);
@@ -144,6 +148,6 @@
         lcd.print((pressure-pressure_save)/100.0,2);
        
       Serial.println("End of loop");
+      digitalWrite(11,LOW); // Darken Teensy's LED
       delay(1000);
-    //  digitalWrite(13,LOW);
     }
