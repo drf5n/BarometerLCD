@@ -13,12 +13,13 @@
    #include <LiquidCrystal.h>
    #define SENSE_VCC 4
    #define SENSE_GND 3
-   #define SAVE_BUTTON 0
+   #define SAVE_BUTTON 10
+   #define ENCODER_COMMON 8
    #define EWMA 0.2
    #define CONTRAST_PWM 14  // Jumper to LCD3/VD
    #define BACKLIGHT_PWM 15 // 220 ohm in series to LCD16/LED-
    
-   Encoder menu(7,8);
+   Encoder menu(7,9);
    
 //   #include <Adafruit_Sensor.h>
  //   #include <Adafruit_BMP085.h>
@@ -61,12 +62,14 @@
       pinMode(SAVE_BUTTON,INPUT_PULLUP);
       pinMode(SENSE_VCC,OUTPUT); // Sensor
       pinMode(SENSE_GND,OUTPUT);
+      pinMode(ENCODER_COMMON,OUTPUT);
       pinMode(CONTRAST_PWM,OUTPUT); // Contrast PWM
       analogWrite(CONTRAST_PWM,80); 
       pinMode(BACKLIGHT_PWM,OUTPUT); // Backlight PWM 
       analogWrite(BACKLIGHT_PWM,160); 
       digitalWrite(SENSE_VCC,HIGH);
       digitalWrite(SENSE_GND,LOW);
+      digitalWrite(ENCODER_COMMON,LOW);
       Serial.begin(9600);
       Serial.println("Pressure Sensor Test"); Serial.println("");
       /* Initialise the sensor */
@@ -127,6 +130,8 @@
         Serial.print("Alt: ");
         Serial.print(altZ);
         Serial.println(" m");
+        Serial.print(menu.read());
+        Serial.println(" menu");
         Serial.println("");
         
         //Display temperature on LCD
