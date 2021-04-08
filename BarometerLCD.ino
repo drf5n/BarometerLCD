@@ -9,7 +9,7 @@
    #include <SPI.h>
    #define SLP 101325 //Sea Level Pressure definition
    #include <Adafruit_Sensor.h>
-   #include <Adafruit_BMP085_U.h>
+   #include <Adafruit_BMP085_U.h> // per https://github.com/adafruit/Adafruit_BMP085_Unified
    #include <LiquidCrystal.h>
    #define SENSE_VCC 4
    #define SENSE_GND 3
